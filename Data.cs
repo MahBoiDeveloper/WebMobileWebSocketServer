@@ -10,8 +10,8 @@ public struct Data
 
     public Data(Random rng)
     {
-        pageViews = (Int32)(rng.NextInt64(10, Int32.MaxValue)) % 1000;
         uniqueVisitors = (Int32)(rng.NextInt64(10, Int32.MaxValue)) % 1000;
+        pageViews = uniqueVisitors + (Int32)(rng.NextInt64(10, Int32.MaxValue)) % 300;
         avgSessionDuration = (Int32)(rng.NextInt64(10, Int32.MaxValue)) % 10000;
     }
 }
