@@ -10,8 +10,8 @@ public class Program
         Random rng = new Random();
         string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
         string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
-        X509Certificate2 certificate = new(certificatePath, privateKeyPath);
-        WebSocketServer wss = new("wss://0.0.0.0:40000", certificate is not null);
+        //X509Certificate2 certificate = new(certificatePath, privateKeyPath);
+        WebSocketServer wss = new("wss://0.0.0.0:40000"/*, certificate is not null*/);
         wss.Start(con =>
         {
         con.OnMessage = msg => 
