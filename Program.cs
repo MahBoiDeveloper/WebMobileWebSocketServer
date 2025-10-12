@@ -7,7 +7,7 @@ public class Program
     public static void Main(string[] args)
     {
         Random rng = new Random();
-        WebSocketServer wss = new("ws://0.0.0.0:40000");
+        WebSocketServer wss = new("wss://0.0.0.0:40000");
         wss.Start(con =>
         {
         con.OnMessage = msg => 
