@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Fleck;
 namespace WebMobileWebSocketServer;
 
@@ -9,11 +10,16 @@ public class Program
         WebSocketServer wss = new("ws://0.0.0.0:40000");
         wss.Start(con =>
         {
-        con.OnMessage = msg => con.Send(msg switch
+        con.OnMessage = msg => 
         {
-            "get" => rng.NextInt64().ToString(),
-            _ => "[wss] Message len: " + msg.Length
-        });
+            string ret = msg switch
+            {
+                "get" => JsonSerializer.Serialize<Data>(new Data(rng)),
+                _ => "[wss] Message len: " + msg.Length
+            };
+            con.Send(ret);
+            Console.WriteLine("Sending on get request: " + ret);
+        };
             con.OnOpen = () => con.Send("[wss] Greetings!");
             con.OnClose = () => con.Send("[wss] Goodbye!");
         });
