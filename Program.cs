@@ -13,12 +13,19 @@ public class Program
 
         if (!new FileInfo(certificatePath).Exists)
         {
-            Console.WriteLine($"[Warning] file {certificatePath} doens't found!");
+            Console.WriteLine($"[Warning] File {certificatePath} doens't found!");
         }
 
         if (!new FileInfo(privateKeyPath).Exists)
         {
-            Console.WriteLine($"[Warning] file {privateKeyPath} doens't found!");
+            Console.WriteLine($"[Warning] File {privateKeyPath} doens't found!");
+        }
+
+        var cert = new X509Certificate2(certificatePath, privateKeyPath);
+
+        if (!cert.Verify())
+        {
+            Console.WriteLine($"[Warning] Certificate isn't verified!");
         }
 
         X509Certificate2 certificate = new(certificatePath, privateKeyPath);
