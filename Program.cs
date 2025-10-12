@@ -11,21 +11,38 @@ public class Program
         string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
         string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
         X509Certificate2 certificate = new(certificatePath, privateKeyPath);
-        WebSocketServer wss = new("wss://0.0.0.0:40000", certificate is not null);
+        WebSocketServer wss = new("wss://0.0.0.0:41000", certificate is not null);
         wss.Start(con =>
         {
-        con.OnMessage = msg => 
-        {
-            string ret = msg switch
+            con.OnMessage = msg => 
             {
-                "get" => JsonSerializer.Serialize<Data>(new Data(rng)),
-                _ => "[wss] Message len: " + msg.Length
+                string ret = msg switch
+                {
+                    "get" => JsonSerializer.Serialize<Data>(new Data(rng)),
+                    _ => $"[{nameof(wss)}] Message len: " + msg.Length
+                };
+                con.Send(ret);
+                Console.WriteLine("Sending on get request: " + ret);
             };
-            con.Send(ret);
-            Console.WriteLine("Sending on get request: " + ret);
-        };
-            con.OnOpen = () => con.Send("[wss] Greetings!");
-            con.OnClose = () => con.Send("[wss] Goodbye!");
+            con.OnOpen = () => con.Send($"[{nameof(wss)}] Greetings!");
+            con.OnClose = () => con.Send($"[{nameof(wss)}] Goodbye!");
+        });
+
+        WebSocketServer ws = new("ws://0.0.0.0:40000");
+        ws.Start(con =>
+        {
+            con.OnMessage = msg => 
+            {
+                string ret = msg switch
+                {
+                    "get" => JsonSerializer.Serialize<Data>(new Data(rng)),
+                    _ => $"[{nameof(wss)}] Message len: " + msg.Length
+                };
+                con.Send(ret);
+                Console.WriteLine("Sending on get request: " + ret);
+            };
+            con.OnOpen = () => con.Send($"[{nameof(wss)}] Greetings!");
+            con.OnClose = () => con.Send($"[{nameof(wss)}] Goodbye!");
         });
 
         WebApplication.CreateBuilder(args).Build().Run();
