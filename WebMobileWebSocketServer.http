@@ -1,0 +1,6 @@
+@WebMobileWebSocketServer_HostAddress = http://localhost:5143
+
+GET {{WebMobileWebSocketServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
