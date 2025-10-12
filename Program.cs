@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using Fleck;
 namespace WebMobileWebSocketServer;
@@ -7,7 +8,10 @@ public class Program
     public static void Main(string[] args)
     {
         Random rng = new Random();
-        WebSocketServer wss = new("ws://0.0.0.0:40000");
+        string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
+        string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
+        X509Certificate2 certificate = new(certificatePath, privateKeyPath);
+        WebSocketServer wss = new("wss://0.0.0.0:40000", certificate is not null);
         wss.Start(con =>
         {
         con.OnMessage = msg => 
