@@ -10,6 +10,17 @@ public class Program
         Random rng = new Random();
         string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
         string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
+
+        if (!new FileInfo(certificatePath).Exists)
+        {
+            Console.WriteLine($"[Warning] file {certificatePath} doens't found!");
+        }
+
+        if (!new FileInfo(privateKeyPath).Exists)
+        {
+            Console.WriteLine($"[Warning] file {privateKeyPath} doens't found!");
+        }
+
         X509Certificate2 certificate = new(certificatePath, privateKeyPath);
         WebSocketServer wss = new("wss://0.0.0.0:41000", certificate is not null);
         wss.Start(con =>
