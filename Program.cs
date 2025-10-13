@@ -21,18 +21,15 @@ public class Program
             Console.WriteLine($"[Warning] File {privateKeyPath} doens't found!");
         }
 
-        var cert = new X509Certificate2(certificatePath, privateKeyPath);
+        X509Certificate2 certificate = new(certificatePath, privateKeyPath);
 
-        if (!cert.Verify())
+        if (!certificate.Verify())
         {
             Console.WriteLine($"[Warning] Certificate isn't verified!");
         }
-
-        X509Certificate2 certificate = new(certificatePath, privateKeyPath);
         WebSocketServer wss = new("wss://0.0.0.0:41000")
         {
             EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-            Certificate = certificate
         };
         wss.Start(con =>
         {
