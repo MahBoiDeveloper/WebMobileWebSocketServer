@@ -81,7 +81,10 @@ public class Program
                     _ => $"[WebSocketServer] Recieved unknown message: "
                 };
                 con.Send(ret);
-                Console.WriteLine("Sending on get request: " + ret);
+                Console.WriteLine($"[{con.ConnectionInfo.ClientIpAddress}:{con.ConnectionInfo.ClientPort}] --> get ");
+                Console.WriteLine(
+                    $"[{con.ConnectionInfo.ClientIpAddress}:{con.ConnectionInfo.ClientPort}] <-- " 
+                    + ret);
             };
             con.OnOpen = () => con.Send($"[WebSocketServer] Greetings!");
             con.OnClose = () => con.Send($"[WebSocketServer] Goodbye!");
