@@ -14,9 +14,6 @@ public class Program
 
     public static void Main(string[] args)
     {
-        string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
-        string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
-
         var app = WebApplication.CreateBuilder(args).Build();
 
         //app.UseWebSockets();
@@ -31,41 +28,9 @@ public class Program
         //    await handler.HandleAsync(context, webSocket);
         //});
 
-        try
-        {
-            if (!new FileInfo(certificatePath).Exists)
-            {
-                Console.WriteLine($"[Warning] File {certificatePath} doesn't found!");
-                throw new("Unable to find open key.");
-            }
-
-            if (!new FileInfo(privateKeyPath).Exists)
-            {
-                Console.WriteLine($"[Warning] File {privateKeyPath} doesn't found!");
-                throw new("Unable to find private key.");
-            }
-
-            X509Certificate2 cert = new(certificatePath, privateKeyPath);
-
-            if (!cert.Verify())
-                Console.WriteLine($"[Warning] Certificate isn't verified!");
-
-            WebSocketServer wss = new("wss://0.0.0.0:41000")
-            {
-                EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                Certificate = cert
-            };
-            wss.Start(wsConfig());
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine("[Error] Unable host secure websocket server connection for wss://0.0.0.0:41000. Error message: " + ex.Message);
-        }
-
         // Default server 40k
         WebSocketServer ws = new("ws://0.0.0.0:40000");
         ws.Start(wsConfig());
-
         app.Run();
     }
 
