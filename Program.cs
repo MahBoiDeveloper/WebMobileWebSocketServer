@@ -19,31 +19,17 @@ public class Program
         var connections = new ConcurrentDictionary<Guid, WebSocket>();
 
         var app = WebApplication.CreateBuilder(args).Build();
+
         app.UseWebSockets();
+        // https://websocket.org/guides/languages/csharp/#aspnet-core-websocket-server
         app.Map("/wss", async context =>
         {
             if (!context.WebSockets.IsWebSocketRequest)
                 return;
-            
-            var buffer = new byte[1024 * 4];
-            using var _wss = await context.WebSockets.AcceptWebSocketAsync();
-            try
-            {
-                while (_wss.State == WebSocketState.Open)
-                {
-                    var result = await _wss.ReceiveAsync(buffer, CancellationToken.None);
-                    if (result.MessageType == WebSocketMessageType.Text)
-                    {
-                        var con = connections.Where(c => c.Value.State == WebSocketState.Open).First();
-                        await con.Value.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(JsonSerializer.Serialize<Data>(new Data(rng)))),
-                                             WebSocketMessageType.Text, true, CancellationToken.None);
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("[Error] Unable to host /wss websocket server. Error message: " + ex.Message);
-            }
+
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            var handler = context.RequestServices.GetRequiredService<WebSocketHandler>();
+            await handler.HandleAsync(context, webSocket);
         });
 
         try
