@@ -29,7 +29,11 @@ public class Program
         }
 
         X509Certificate2 certificate = new(certificatePath, privateKeyPath);
-        WebSocketServer wss = new("wss://0.0.0.0:41000", certificate is not null);
+        WebSocketServer wss = new("wss://0.0.0.0:41000")
+        {
+            EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+            Certificate = certificate
+        };
         wss.Start(con =>
         {
             con.OnMessage = msg => 
