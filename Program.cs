@@ -16,11 +16,10 @@ public class Program
     {
         string certificatePath = "/etc/letsencrypt/live/expserver.site/fullchain.pem";
         string privateKeyPath = "/etc/letsencrypt/live/expserver.site/privkey.pem";
-        var connections = new ConcurrentDictionary<Guid, WebSocket>();
 
         var app = WebApplication.CreateBuilder(args).Build();
 
-        app.UseWebSockets();
+        //app.UseWebSockets();
         // https://websocket.org/guides/languages/csharp/#aspnet-core-websocket-server
         //app.Map("/wss", async context =>
         //{
