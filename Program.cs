@@ -22,15 +22,15 @@ public class Program
 
         app.UseWebSockets();
         // https://websocket.org/guides/languages/csharp/#aspnet-core-websocket-server
-        app.Map("/wss", async context =>
-        {
-            if (!context.WebSockets.IsWebSocketRequest)
-                return;
+        //app.Map("/wss", async context =>
+        //{
+        //    if (!context.WebSockets.IsWebSocketRequest)
+        //        return;
 
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            var handler = context.RequestServices.GetRequiredService<WebSocketHandler>();
-            await handler.HandleAsync(context, webSocket);
-        });
+        //    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        //    var handler = context.RequestServices.GetRequiredService<WebSocketHandler>();
+        //    await handler.HandleAsync(context, webSocket);
+        //});
 
         try
         {
